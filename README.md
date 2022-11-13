@@ -1,3 +1,6 @@
+<h3>Forked repo from nerfstudio-projec[https://github.com/nerfstudio-project/nerfstudio] </h3>
+<p> Develop some extra functionalities for my master thesis </p>
+
 <p align="center">
     <!-- community badges -->
     <a href="https://discord.gg/uMbNqcraFc"><img src="https://img.shields.io/badge/Join-Discord-blue.svg"/></a>
