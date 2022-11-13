@@ -138,3 +138,40 @@ def get_path_from_json(camera_path: Dict[str, Any]) -> Cameras:
         cy=image_height / 2,
         camera_to_worlds=camera_to_worlds,
     )
+
+def get_camera_poses_from_json(camera_path: Dict[str, Any]) -> Cameras:
+    """
+    Takes a camera path dictionary containing the camera poses and intrinsics for each camera
+    and returns a trajectory as a Camera instance.
+
+    Args:
+        camera_path: A dictionary of the camera path information coming from the viewer.
+
+    Returns:
+        A Cameras instance with the camera path.
+    """
+
+    image_height = camera_path["w"]
+    image_width = camera_path["h"]
+
+    c2ws = []
+    fxs = []
+    fys = []
+    for camera in camera_path["frames"]:
+        # pose
+        c2w = torch.tensor(camera["transform_matrix"]).view(4, 4)[:3]
+        c2ws.append(c2w)
+        # field of view
+        fxs.append(camera["fl_x"])
+        fys.append(camera["fl_y"])
+
+    camera_to_worlds = torch.stack(c2ws, dim=0)
+    fx = torch.tensor(fxs)
+    fy = torch.tensor(fys)
+    return Cameras(
+        fx=fx,
+        fy=fy,
+        cx=image_width / 2,
+        cy=image_height / 2,
+        camera_to_worlds=camera_to_worlds,
+    )

@@ -23,7 +23,7 @@ from rich.progress import (
 )
 from typing_extensions import Literal, assert_never
 
-from nerfstudio.cameras.camera_paths import get_path_from_json, get_spiral_path
+from nerfstudio.cameras.camera_paths import get_path_from_json, get_spiral_path, get_camera_poses_from_json
 from nerfstudio.cameras.cameras import Cameras
 from nerfstudio.configs.base_config import Config  # pylint: disable=unused-import
 from nerfstudio.pipelines.base_pipeline import Pipeline
@@ -133,6 +133,11 @@ class RenderTrajectory:
             camera_start = pipeline.datamanager.eval_dataloader.get_camera(image_idx=0)
             # TODO(ethan): pass in the up direction of the camera
             camera_path = get_spiral_path(camera_start, steps=30, radius=0.1)
+        elif self.traj == "known_camera_poses":
+            with open(self.camera_path_filename, "r", encoding="utf-8") as f:
+                camera_path = json.load(f)
+            seconds = 5  # TODO: GET FROM CONFIG
+            camera_path = get_camera_poses_from_json(camera_path)
         elif self.traj == "filename":
             with open(self.camera_path_filename, "r", encoding="utf-8") as f:
                 camera_path = json.load(f)
